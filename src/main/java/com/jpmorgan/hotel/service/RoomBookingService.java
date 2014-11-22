@@ -66,7 +66,7 @@ public class RoomBookingService {
         Objects.requireNonNull(room, "A room must be provided");
         if(!roomIsAvailable(room)){
             throw new IllegalArgumentException("Room has been booked");
-        };
+        }
         availableRooms.remove(room);
     }
 

@@ -15,6 +15,19 @@ import static org.hamcrest.Matchers.*;
 public class RoomBookingServiceTest {
 
     @Test
+    public void testQuoteStandardOneItemsRoom() throws Exception {
+        final BigDecimal expectedPrice = new BigDecimal(3.00);
+        StandardRoom stdRoom = new StandardRoom("101");
+        RoomBookingService bookingService = new RoomBookingService();
+        bookingService.addRoom(stdRoom);
+
+        stdRoom.addFacility(SWIMMING_POOL);
+
+        assertThat(bookingService.quoteRoom(stdRoom),is(equalTo(expectedPrice)));
+
+    }
+
+    @Test
     public void testQuoteStandardThreeItemsRoom() throws Exception {
         final BigDecimal expectedPrice = new BigDecimal(9.00);
         StandardRoom stdRoom = new StandardRoom("101");

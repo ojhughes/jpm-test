@@ -12,5 +12,6 @@ public interface Room {
     String getRoomNumber();
     Set<Facilities> getBookedFacilities();
     void addFacility(Facilities facility);
+    int getBasePrice();
     BigDecimal calculatePrice(PricingVisitor visitor);
 }

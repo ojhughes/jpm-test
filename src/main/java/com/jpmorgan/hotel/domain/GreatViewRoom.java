@@ -15,14 +15,19 @@ public class GreatViewRoom implements Room{
      * roomNumber
      */
     private String roomNumber;
+    private int basePrice = 0;
     private Set<Facilities> bookedFacilities = new HashSet<Facilities>();
 
+    public GreatViewRoom(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
     /**
      *
      * @param roomNumber
      */
-    public GreatViewRoom(String roomNumber) {
+    public GreatViewRoom(String roomNumber, int basePrice) {
         this.roomNumber = roomNumber;
+        this.basePrice = basePrice;
     }
 
     /**
@@ -42,6 +47,11 @@ public class GreatViewRoom implements Room{
     @Override
     public void addFacility(Facilities facility) {
         bookedFacilities.add(facility);
+    }
+
+    @Override
+    public int getBasePrice() {
+        return basePrice;
     }
 
     @Override

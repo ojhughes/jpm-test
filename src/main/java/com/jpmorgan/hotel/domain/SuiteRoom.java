@@ -16,6 +16,8 @@ public class SuiteRoom implements Room{
      * roomNumber
      */
     private String roomNumber;
+    private int basePrice = 0;
+
     private Set<Facilities> bookedFacilities = new HashSet<Facilities>();
 
     /**
@@ -24,6 +26,11 @@ public class SuiteRoom implements Room{
      */
     public SuiteRoom(String id) {
         this.roomNumber = id;
+    }
+
+    public SuiteRoom(String roomNumber, int basePrice) {
+        this.roomNumber = roomNumber;
+        this.basePrice = basePrice;
     }
 
     /**
@@ -63,5 +70,10 @@ public class SuiteRoom implements Room{
         }
         final SuiteRoom other = (SuiteRoom) obj;
         return Objects.equals(this.roomNumber, other.roomNumber);
+    }
+
+    @Override
+    public int getBasePrice() {
+        return basePrice;
     }
 }

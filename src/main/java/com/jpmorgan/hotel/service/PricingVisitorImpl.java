@@ -8,6 +8,7 @@ import com.jpmorgan.hotel.domain.SuiteRoom;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -19,20 +20,18 @@ import java.util.Set;
 public class PricingVisitorImpl implements PricingVisitor {
     @Override
     public BigDecimal visit(StandardRoom room, Set<Facilities> facilities) {
-        int numberOfFacilites = facilities.size();
-        BigDecimal price = new BigDecimal(0.00);
-        List<Facilities> discountFacilities = new ArrayList<Facilities>(facilities).subList(0,2);
-        for(Facilities discountFacility : discountFacilities){
-            price.add(new BigDecimal(3.00));
-        }
-        if(numberOfFacilites > 3){
-            List<Facilities> standardPriceFacilities =
-                    new ArrayList<Facilities>(facilities).subList(3,numberOfFacilites - 1);
-
-            for(Facilities stdPriceFacility : standardPriceFacilities ){
+        BigDecimal price = new BigDecimal(room.getBasePrice());
+        List<Facilities> facilitiesList = new ArrayList<Facilities>(facilities);
+        for(ListIterator<Facilities> iter = facilitiesList.listIterator(); iter.hasNext();){
+            if(iter.nextIndex() < 3){
+                price =  price.add(new BigDecimal(3.00));
+            }
+            else {
                 price = price.add(new BigDecimal(6.00));
             }
+            iter.next();
         }
+
         return price;
     }
 
