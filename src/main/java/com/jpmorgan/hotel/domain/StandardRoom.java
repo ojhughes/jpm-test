@@ -1,9 +1,8 @@
 package com.jpmorgan.hotel.domain;
 
-import com.jpmorgan.hotel.service.PricingVisitor;
+import com.jpmorgan.hotel.service.PricingCalculator;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,19 +13,21 @@ public class StandardRoom implements Room{
     /**
      * roomNumber
      */
-    private String roomNumber;
-    private int basePrice = 0;
-    private Set<Facilities> bookedFacilities = new HashSet<Facilities>();
+    private Integer roomNumber;
+    private BigDecimal basePrice = new BigDecimal(0);
+
+    public StandardRoom() {
+    }
 
     /**
      *
      * @param roomNumber
      */
-    public StandardRoom(String roomNumber) {
+    public StandardRoom(Integer roomNumber) {
         this.roomNumber = roomNumber;
     }
 
-    public StandardRoom(String roomNumber, int basePrice) {
+    public StandardRoom(Integer roomNumber, BigDecimal basePrice) {
         this.roomNumber = roomNumber;
         this.basePrice = basePrice;
     }
@@ -36,24 +37,20 @@ public class StandardRoom implements Room{
      * @return
      */
     @Override
-    public String getRoomNumber(){
+    public Integer getRoomNumber(){
         return roomNumber;
     }
 
     @Override
-    public Set<Facilities> getBookedFacilities() {
-        return bookedFacilities;
-    }
-
-    @Override
-    public void addFacility(Facilities facility) {
-        bookedFacilities.add(facility);
-    }
-
-    @Override
-    public BigDecimal calculatePrice(PricingVisitor visitor) {
+    public BigDecimal calculatePrice(PricingCalculator visitor, Set<Facilities> bookedFacilities) {
         return visitor.visit(this,bookedFacilities);
     }
+
+    @Override
+    public BigDecimal getBasePrice() {
+        return basePrice;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(roomNumber);
@@ -71,8 +68,4 @@ public class StandardRoom implements Room{
         return Objects.equals(this.roomNumber, other.roomNumber);
     }
 
-    @Override
-    public int getBasePrice() {
-        return basePrice;
-    }
 }

@@ -1,38 +1,29 @@
 package com.jpmorgan.hotel.service;
 
-import com.jpmorgan.hotel.domain.Facilities;
-import com.jpmorgan.hotel.domain.Room;
+import com.jpmorgan.hotel.domain.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+
+import static java.lang.String.format;
 
 /**
  * Public interface to room booking service
  */
 public class RoomBookingService {
-    /**
-     * availableRooms
-     */
-    private Set<Room> availableRooms = new HashSet<Room>();
+
+    private BookingSchedule schedule = BookingSchedule.INSTANCE;
 
     /**
      *
      * @param room
-     * @return
+     * @return quote
      */
-    public <T extends Room> BigDecimal quoteRoom(T room) {
+    public <T extends Room> BigDecimal quoteRoom(T room, Set<Facilities> requestedFacilities) {
         Objects.requireNonNull(room, "A room must be provided");
 
-        PricingVisitor priceCalculator = new PricingVisitorImpl();
-        return room.calculatePrice(priceCalculator);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Set<Room> getAvailableRooms() {
-        return availableRooms;
+        Quotation quote = new Quotation(room, requestedFacilities, new DefaultPricingCalculator() );
+        return quote.getQuote();
     }
 
     /**
@@ -41,10 +32,13 @@ public class RoomBookingService {
      * @param <T>
      */
     public <T extends Room> void addRoom(T room){
-        if(availableRooms.contains(room)){
+        if(isRoomAvailable(room)){
             throw new IllegalArgumentException("Room has already been added");
         }
-        availableRooms.add(room);
+        boolean addedSuccessfully = schedule.addRoom(room);
+        if(!addedSuccessfully){
+            throw new IllegalStateException("Failed to add room");
+        }
     }
 
     /**
@@ -53,8 +47,8 @@ public class RoomBookingService {
      * @param <T>
      * @return
      */
-    public  <T extends Room > boolean roomIsAvailable(T room){
-        return availableRooms.contains(room);
+    public  <T extends Room > boolean isRoomAvailable(T room){
+        return schedule.isRoomAvailable(room);
     }
 
     /**
@@ -64,10 +58,11 @@ public class RoomBookingService {
      */
     public <T extends Room > void bookRoom(T room){
         Objects.requireNonNull(room, "A room must be provided");
-        if(!roomIsAvailable(room)){
-            throw new IllegalArgumentException("Room has been booked");
-        }
-        availableRooms.remove(room);
-    }
+        Objects.requireNonNull(room.getRoomNumber(), "A room number must be provided");
 
+        boolean bookedSuccessfully = schedule.bookRoom(room);
+        if(!bookedSuccessfully){
+            throw new IllegalStateException("Failed to book room");
+        }
+    }
 }

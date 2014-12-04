@@ -1,9 +1,8 @@
 package com.jpmorgan.hotel.domain;
 
-import com.jpmorgan.hotel.service.PricingVisitor;
+import com.jpmorgan.hotel.service.PricingCalculator;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,18 +13,20 @@ public class GreatViewRoom implements Room{
     /**
      * roomNumber
      */
-    private String roomNumber;
-    private int basePrice = 0;
-    private Set<Facilities> bookedFacilities = new HashSet<Facilities>();
+    private Integer roomNumber;
+    private BigDecimal basePrice =  new BigDecimal(0);
 
-    public GreatViewRoom(String roomNumber) {
+    public GreatViewRoom() {
+    }
+
+    public GreatViewRoom(Integer roomNumber) {
         this.roomNumber = roomNumber;
     }
     /**
      *
      * @param roomNumber
      */
-    public GreatViewRoom(String roomNumber, int basePrice) {
+    public GreatViewRoom(Integer roomNumber, BigDecimal basePrice) {
         this.roomNumber = roomNumber;
         this.basePrice = basePrice;
     }
@@ -35,27 +36,17 @@ public class GreatViewRoom implements Room{
      * @return
      */
     @Override
-    public String getRoomNumber(){
+    public Integer getRoomNumber(){
         return roomNumber;
     }
 
     @Override
-    public Set<Facilities> getBookedFacilities() {
-        return bookedFacilities;
-    }
-
-    @Override
-    public void addFacility(Facilities facility) {
-        bookedFacilities.add(facility);
-    }
-
-    @Override
-    public int getBasePrice() {
+    public BigDecimal getBasePrice() {
         return basePrice;
     }
 
     @Override
-    public BigDecimal calculatePrice(PricingVisitor visitor) {
+    public BigDecimal calculatePrice(PricingCalculator visitor, Set<Facilities> bookedFacilities) {
         return visitor.visit(this,bookedFacilities);
     }
     @Override
